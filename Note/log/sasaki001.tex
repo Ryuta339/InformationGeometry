@@ -1,0 +1,25 @@
+\begin{itemize}
+
+	\item $ q^{(t)} \in \mathbb{R}^2 \rightarrow [0,1]$: （２次元）確率分布 
+	\item $W (y | x)$: channel のprob. distribution.
+\end{itemize}
+
+$q^{(t)}$ は次で更新する。
+\begin{align}
+	q^{(t)} (x) \overset{f}{\mapsto}
+	q^{(t+1)} (x) := \cfrac{1}{Z} q^{(t)} (x) \times \cfrac{1}{\exp  \mathbb{KL} [W (y|x) \parallel r (y) ]}, 
+	\\
+	r (y) := \sum_x q^{(t)} (x) \circ W (y | x)
+\end{align}
+$Z$ は規格化定数。
+
+$f$ は全単射。
+$f$ の逆像を求める
+。
+
+
+疑問点
+\begin{itemize}
+	\item $\circ$ は何の演算子？
+	\item 単射？ 全射？
+\end{itemize}
