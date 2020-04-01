@@ -1,15 +1,21 @@
 \begin{itemize}
 
-	\item $ q^{(t)} \in \mathbb{R}^2 \rightarrow [0,1]$: （２次元）確率分布 
+	\item $ q^{(t)} = \begin{bmatrix} q_0^{(t)} \\ q_1^{(t)} \end{bmatrix} 
+			\in (0,1)^2 , q_0^{(t)} + q_1^{(t)} = 1$: 確率変数
 	\item $W (y | x)$: channel のprob. distribution.
 \end{itemize}
 
 $q^{(t)}$ は次で更新する。
 \begin{align}
-	q^{(t)} (x) \overset{f}{\mapsto}
-	q^{(t+1)} (x) := \cfrac{1}{Z} q^{(t)} (x) \times \cfrac{1}{\exp  \mathbb{KL} [W (y|x) \parallel r (y) ]}, 
-	\\
-	r (y) := \sum_x q^{(t)} (x) \circ W (y | x)
+	q^{(t)} \overset{f}{\mapsto}
+	q^{(t+1)} := \cfrac{1}{Z} \begin{bmatrix}
+		q_0^{(t)} \times \cfrac{1}{\exp  \mathbb{KL} [W (\ast | 0) \parallel r ]} \\
+		q_1^{(t)} \times \cfrac{1}{\exp \mathbb{KL} [W (\ast | 1) \parallel r]}
+	\end{bmatrix}
+	,\\
+	r_j := \sum_{i\in\{0,1\}} q^{(t)}_i \cdot W (j | i),
+	\quad
+	r = \begin{bmatrix} r_0 \\ r_1 \end{bmatrix}
 \end{align}
 $Z$ は規格化定数。
 
@@ -18,8 +24,52 @@ $f$ の逆像を求める
 。
 
 
-疑問点
-\begin{itemize}
-	\item $\circ$ は何の演算子？
-	\item 単射？ 全射？
-\end{itemize}
+
+例
+
+$q^{(t)} = \begin{bmatrix} \frac{1}{2} \\ \frac{1}{2} \end{bmatrix}$ \\
+
+	$W (\ast | 0) = \begin{bmatrix} \frac{2}{3} \\ \frac{1}{3} \end{bmatrix},
+	W (\ast | 1) = \begin{bmatrix} \frac{1}{3} \\ \frac{2}{3} \end{bmatrix}$
+
+\begin{center}
+\begin{tikzpicture}
+	\draw[->] (0,1.5) node[left] {$0$} -- (3,1.5) node[above,pos=0.5,scale=0.7,transform shape]{$W(0 | 0)=2/3$}  node[right]{$0$};
+	\draw[->] (0,0) node[left] {$1$} -- (3,0) node[below,pos=0.5,scale=0.7,transform shape]{$W(1 | 1)=2/3$} node[right]{$1$};
+	\draw[->] (0,1.5) -- (3,0) node[left,pos=0.3,scale=0.7,transform shape]{$W(1 | 0)=1/3$};
+	\draw[->] (0,0) -- (3,1.5) node[right,pos=0.7,scale=0.7,transform shape]{$W(0 | 1)=1/3$};
+\end{tikzpicture}
+\end{center}
+
+よって、
+\begin{align*}
+	r_0
+		=& q_0^{(t)} \cdot W(0|0) + q_1^{(t)} \cdot W (0|1)
+		= \cfrac{1}{2} \cdot \cfrac{2}{3} + \cfrac{1}{2} \cdot \cfrac{1}{3}
+		= \cfrac{1}{2}, \\
+	r_1
+		=& q_0^{(t)} \cdot W(1|0) + q_1^{(t)} \cdot W (1|1)
+		= \cfrac{1}{2} \cdot \cfrac{1}{3} + \cfrac{1}{2} \cdot \cfrac{2}{3}
+		= \cfrac{1}{2}, \\
+	\therefore\quad
+	r =& \begin{bmatrix} 1/2 \\ 1/2 \end{bmatrix}.
+\end{align*}
+従って、
+\begin{align*}
+	\mathbb{KL}[W (\ast|0) \parallel r]
+	=& \cfrac{2}{3} \log \cfrac{\frac{2}{3}}{\frac{1}{2}} + \cfrac{1}{3} \log \cfrac{\frac{1}{3}}{\frac{1}{2}}
+	= \cfrac{2}{3} \log \cfrac{4}{3} + \cfrac{1}{3} \log \cfrac{2}{3} 
+	= \cfrac{5}{3} \log 2 - \log 3 , \\
+	\mathbb{KL}[ W(\ast|1) \parallel r]
+	=& \cfrac{1}{3} \log \cfrac{\frac{1}{3}}{\frac{1}{2}} + \cfrac{2}{3} \log \cfrac{\frac{2}{3}}{\frac{1}{2}}
+	= \cfrac{1}{3} \log \cfrac{2}{3} + \cfrac{2}{3} \log \cfrac{4}{3}
+	= \cfrac{5}{3} \log 2 - \log 3.
+\end{align*}
+
+以上から
+\begin{align*}
+	q^{(t+1)}_0 
+		=& \cfrac{1}{Z} \times \cfrac{1}{2 \exp \left(\frac{5}{3} \log 2 - \log 3 \right)}, \\
+	q^{(t+1)}_1
+		=& \cfrac{1}{Z} \times \cfrac{1}{2 \exp \left(\frac{5}{3} \log 2 - \log 3 \right)},
+\end{align*}
