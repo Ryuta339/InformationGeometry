@@ -1,30 +1,43 @@
 import numpy as np
-from abc import *
+
+'''
+    W is a 2x2 matrix
+    W[col,row] = W(col|row)
+'''
+class Channel:
+    def __init__ (self, w):
+        self.w = w
+
+    def goThrough (self, prob):
+        return self.w @ prob
+
+    def kullbackLeibler (self, r):
+        if r.shape != (2,1):
+            r = r.reshape ((2,1))
+        tmp = w * np.log (w / r)
+        return tmp.sum (axis=0)
 
 
-class ChannelInterface (ABC):
+#p = np.ones ((2,)) / 2
+#w = np.array ([[2,1],[1,2]]) / 3
+#ch = Channel (w);
+#
+#r = ch.goThrough (p);
+#p2 = p * np.exp (- ch.kullbackLeibler (r))
+#
+#p2 = p2 / p2.sum ()
+#
+#print (p2)
+#
 
-    @abstractmethod
-    # probability distribution
-    def W (self, x, y):
-        raise NotImplementedError ()
-
-    @abstractmethod
-    # sampling
-    def sampling (self, x):
-        raise NotImplementedError ()
 
 
+p = np.ones ((2,)) / 2
+w = np.array ([[2/3,1/2],[1/3,1/2]])
+ch = Channel (w)
 
-class GaussianChannel (ChannelInterface):
+r = ch.goThrough (p);
+p2 = p * np.exp (- ch.kullbackLeibler (r))
+p2 = p2 / p2.sum()
 
-    def __init__ (self, sigma):
-        self.sigma = sigma
-
-    # override
-    def W (self, y, x):
-        return np.exp (-(x-y)**2/(2*self.sigma**2)) / np.sqrt(2*self.sigma**2);
-
-    # override
-    def sampling (self, x):
-        return np.random.normal (x, self.sigma);
+print (p2)
