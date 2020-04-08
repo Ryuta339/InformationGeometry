@@ -14,30 +14,11 @@ class Channel:
     def kullbackLeibler (self, r):
         if r.shape != (2,1):
             r = r.reshape ((2,1))
-        tmp = w * np.log (w / r)
+        tmp = self.w * np.log (self.w / r)
         return tmp.sum (axis=0)
 
+    def nextProb (self, prob):
+        r = self.goThrough (prob)
+        nProb = prob * np.exp (- self.kullbackLeibler (r))
+        return nProb / nProb.sum ()
 
-#p = np.ones ((2,)) / 2
-#w = np.array ([[2,1],[1,2]]) / 3
-#ch = Channel (w);
-#
-#r = ch.goThrough (p);
-#p2 = p * np.exp (- ch.kullbackLeibler (r))
-#
-#p2 = p2 / p2.sum ()
-#
-#print (p2)
-#
-
-
-
-p = np.ones ((2,)) / 2
-w = np.array ([[2/3,1/2],[1/3,1/2]])
-ch = Channel (w)
-
-r = ch.goThrough (p);
-p2 = p * np.exp (- ch.kullbackLeibler (r))
-p2 = p2 / p2.sum()
-
-print (p2)
