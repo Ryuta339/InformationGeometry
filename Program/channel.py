@@ -14,7 +14,7 @@ class Channel:
     def kullbackLeibler (self, r):
         if r.shape != (2,1):
             r = r.reshape ((2,1))
-        tmp = w * np.log (w / r)
+        tmp = self.w * np.log (self.w / r)
         return tmp.sum (axis=0)
 
 
