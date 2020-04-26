@@ -2,11 +2,10 @@ import numpy as np
 from scipy import optimize as opt
 from channel import Channel
 
-def calcPrev (channel, prev, nxt):
-    retval = np.zeros ((3,))
-    retval[0:2] = channel.nextProb (prev[0:2]) - nxt # next prob
-    retval[2] = prev[0] + prev[1] - 1                # normaization
-    return retval
+def nextProb0 (channel, p):
+    p0 = p[0]
+    prob = np.array ([p0, 1-p0])
+    return channel.nextProb (prob)[0]
 
 w = np.array ([[2/3,1/3],[1/3,2/3]]);
 ch = Channel (w)
